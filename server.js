@@ -89,8 +89,9 @@ app.post("/posts/add",upload.single('featureImage'),function(req,res,next){
                 }
               }
             );
-
+           
           streamifier.createReadStream(req.file.buffer).pipe(stream);
+              
         });
     };
 
