@@ -1,3 +1,5 @@
+const res = require("express/lib/response");
+
 var posts = [];
 var categories = [];
 function fn() {
@@ -58,6 +60,19 @@ function getPublishedPosts() {
 
     });
 }
+function getPublishedPostsByCategory(category) {
+    return new Promise((resolve, reject) => {
+        if (posts.length == 0) {
+            reject("no data ");
+        }
+        else {
+            const result = posts.filter(post => post.published == true&&post.category==category);
+            resolve(result);
+        }
+
+    });
+}
+
 function getCategories() {
     return new Promise((resolve, reject) => {
         if (categories.length == 0) {
@@ -84,7 +99,14 @@ function addPost(postData) {
 
                 postData.published = JSON.parse("true");
             }
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            today=yyyy+'-'+dd+'-'+mm;
+            postData.postDate=today;
             postData.id = posts.length + 1;
+            postData
             posts.push(postData);
             resolve(postData)
         }
@@ -93,6 +115,7 @@ function addPost(postData) {
 
 function getPostByCategory(category)
 {
+    
     return new Promise((resolve, reject) => {
         if (posts.length == 0) {
             reject("no data ");
@@ -138,14 +161,17 @@ function getPostsByMinDate(minDateStr){
     });
 }
 function getPostById(id){
+    
     return new Promise((resolve, reject) => {
         if (posts.length == 0) {
             reject("no data ");
         }
         else {
+       
             const result = posts.filter(post =>post.id == id);
             if(result.length==0)
             {
+                
                 reject("no record found of this ID")
             }
             resolve(result);
@@ -154,5 +180,5 @@ function getPostById(id){
     });
 }
 module.exports = {
-    fn, initialize, getAllPosts, getCategories, getPublishedPosts, addPost,getPostByCategory,getPostsByMinDate,getPostById
+    fn, initialize, getAllPosts, getCategories, getPublishedPosts, addPost,getPostByCategory,getPostsByMinDate,getPostById,getPublishedPostsByCategory
 }
