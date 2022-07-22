@@ -15,7 +15,7 @@
     <div class="container" style="padding-top:60px">
         <div class="row">
             <div class="col-md-12">
-                <h2>Categories</h2>
+                <h2><a href="/categories/add" class="btn btn-success pull-right">Add Category</a>Categories</h2>
                 <hr />
                 <div class="table-responsive">
                     <table class="table">
@@ -23,7 +23,8 @@
                             <tr>
                                 <th>category ID</th>
                                 <th>Name</th>
-                             
+                                <th></th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -33,7 +34,8 @@
                             <tr>
                                 <td>{{id}}</td>
                                 <td>{{category}}</td>
-                
+                                <td><a href="categories/delete/{{id}}" class="btn btn-danger">remove</a></td>
+
                             </tr>
                             {{!-- {{/unless}} --}}
                             {{else}}

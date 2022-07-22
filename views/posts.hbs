@@ -1,13 +1,12 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
-        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
-    <link rel="stylesheet" href="/css/main.css">
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/css/main.css" />
     <title>Posts</title>
 </head>
 
@@ -15,7 +14,7 @@
     <div class="container" style="padding-top:60px">
         <div class="row">
             <div class="col-md-12">
-                <h2>Posts</h2>
+                <h2><a href="/posts/add" class="btn btn-success pull-right">Add Post</a>Posts</h2>
                 <hr />
                 <div class="table-responsive">
                     <table class="table">
@@ -26,6 +25,7 @@
                                 <th>Post Date</th>
                                 <th>category</th>
                                 <th>published</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,9 +35,10 @@
                             <tr>
                                 <td>{{id}}</td>
                                 <td>{{title}}</td>
-                                <td>{{postDate}}</td>
+                                <td> {{#formatDate postDate}}{{/formatDate}}</td>
                                 <td><a href="/posts?category={{category}}">{{category}}</a></td>
                                 <td>{{published}}</td>
+                                <td><a href="/posts/delete/{{id}}" class="btn btn-danger">remove</a></td>
 
                             </tr>
                             {{!-- {{/unless}} --}}
@@ -51,7 +52,6 @@
 
                     </table>
                 </div>
-
 
             </div>
 

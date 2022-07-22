@@ -14,7 +14,6 @@ const { json, redirect } = require("express/lib/response");
 var app = express();
 const path = require('path');
 const router = express.Router();
-//const blog = require("./blog-service");
 const blogData = require("./blog-service")
 const multer = require("multer");
 const cloudinary = require('cloudinary').v2;
@@ -24,7 +23,9 @@ const res = require("express/lib/response");
 const exphbs = require('express-handlebars');
 const stripJs = require('strip-js');
 const { Console } = require("console");
+
 app.engine('hbs', exphbs.engine({
+
     layoutsDir: __dirname + '/views/layouts',
     extname: 'hbs',
     helpers: {
@@ -44,6 +45,13 @@ app.engine('hbs', exphbs.engine({
         },
         safeHTML: function (context) {
             return stripJs(context);
+        },
+        formatDate: function (dateObj) {
+            var dateObj = new Date();
+            let year = dateObj.getFullYear();
+            let month = (dateObj.getMonth() + 1).toString();
+            let day = dateObj.getDate().toString();
+            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
         }
     }
 }));
@@ -55,7 +63,7 @@ app.use(function (req, res, next) {
     app.locals.viewingCategory = req.query.category;
     next();
 });
-
+app.use(express.urlencoded({ extended: true }));
 cloudinary.config({
     cloud_name: 'dg3smtlr4',
     api_key: '885533493491343',
@@ -64,6 +72,7 @@ cloudinary.config({
 });
 const upload = multer();
 var postData = {};
+var categoryData = {};
 
 
 app.get("/", (req, res) => {
@@ -100,7 +109,6 @@ app.get("/blog", async (req, res) => {
     } catch (err) {
         viewData.categoriesMessage = "no results"
     }
-   
     res.render("blog", { data: viewData });
 
 })
@@ -122,9 +130,9 @@ app.get('/blog/:id', async (req, res) => {
         viewData.message = "no results";
     }
     try {
-      
+
         viewData.post = await blogData.getPostById(req.params.id);
-        viewData.post=viewData.post[0];
+        viewData.post = viewData.post[0];
     } catch (err) {
         viewData.message = "no results";
     }
@@ -134,7 +142,7 @@ app.get('/blog/:id', async (req, res) => {
     } catch (err) {
         viewData.categoriesMessage = "no results"
     }
- 
+
     res.render("blog", { data: viewData })
 });
 app.get("/posts", (req, res) => {
@@ -145,26 +153,35 @@ app.get("/posts", (req, res) => {
             .then(data => res.render("posts", { posts: data }))
             .catch(err => res.render("posts", { message: "no results" }))
     } else if (req.query.minDate != null) {
+
         blogData.getPostsByMinDate(req.query.minDate)
             .then(data => res.render("posts", { posts: data }))
             .catch(err => res.render("posts", { message: "no results" }))
     }
     else {
-        blogData.getAllPosts()
-            .then(data => res.render("posts", { posts: data }))
-            .catch(err => res.render("posts", { message: "no results" }))
+
+        blogData.getAllPosts().then(data => res.render("posts", { posts: data })
+
+        ).catch(err => res.render("posts", { message: "no results" }));
+
+
     }
 
 
 })
 
 app.get("/categories", (req, res) => {
+
     blogData.getCategories()
-        .then(data => res.render('categories', { categories: data }))
+        .then(data => res.render("categories", { categories: data }))
         .catch(err => res.render('categories', { message: "no result" }))
 })
 app.get("/posts/add", (req, res) => {
-    res.render("addPost");
+    blogData.getCategories()
+        .then(data => res.render("addPost", { categories: data }))
+        .catch(err => res.render('addPost', { categories: [] }))
+
+
 })
 
 app.post("/posts/add", upload.single('featureImage'), function (req, res, next) {
@@ -207,9 +224,42 @@ app.post("/posts/add", upload.single('featureImage'), function (req, res, next) 
 
     })
 })
+
+app.get("/categories/add", (req, res) => {
+    res.render("addCategory");
+})
+
+app.post("/categories/add", function (req, res) {
+
+
+    categoryData = {
+        "category": req.body.category,
+        "id": 0
+    }
+    console.log(categoryData);
+    blogData.addCategory(categoryData).then(function () {
+
+        return res.redirect("/categories");
+    }).catch(err => res.send(err))
+
+})
 app.get("/posts/:id", (req, res) => {
 
     blogData.getPostById(req.params.id).then(data => res.send(data)
+    ).catch(err => res.send(err))
+})
+app.get("/posts/delete/:id", (req, res) => {
+
+    blogData.deletePostById(req.params.id).then(function () {
+        res.redirect("/posts");
+    }
+    ).catch(err => res.send(err))
+})
+app.get("/categories/delete/:id", (req, res) => {
+
+    blogData.deleteCategoryById(req.params.id).then(function () {
+        return res.redirect("/categories");
+    }
     ).catch(err => res.send(err))
 })
 app.get('*', function (req, res) {
@@ -220,8 +270,9 @@ app.get('*', function (req, res) {
 app.use('/', router);
 blogData.initialize().then(function (categories, posts) {
     app.listen(HTTP_PORT);
-}).catch(() => {
-    console.log("no data to display");
+}).catch((error) => {
+    console.log(error);
+    //console.log("no data to display");
 })
 
 
