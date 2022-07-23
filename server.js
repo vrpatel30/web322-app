@@ -272,7 +272,7 @@ blogData.initialize().then(function (categories, posts) {
     app.listen(HTTP_PORT);
 }).catch((error) => {
     console.log(error);
-    //console.log("no data to display");
+    
 })
 
 
