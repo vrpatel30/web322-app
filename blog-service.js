@@ -1,8 +1,8 @@
 const res = require('express/lib/response');
 const Sequelize = require('sequelize');
 const { gte } = Sequelize.Op;
-var sequelize = new Sequelize('d1roa8hcncgbt1', 'dgsdyibalhoypw', 'e48f1e40cf614f7db6b1f605ad4954e5a9affe0b70b0434b02caed3036cf582e', {
-    host: 'ec2-100-26-39-41.compute-1.amazonaws.com',
+var sequelize = new Sequelize('dg2djqht3qkf8', 'brwxsynrzizasf', '1a18909760ff9d8d2c06011212913ed9faf84ce25dc54a4e2d574547b0c6f05c', {
+    host: 'ec2-34-235-31-124.compute-1.amazonaws.com',
     dialect: 'postgres',
     port: 5432,
     dialectOptions: {
@@ -25,10 +25,10 @@ Post.belongsTo(Category, { foreignKey: 'category' });
 function initialize() {
 
     return new Promise((resolve, reject) => {
-        sequelize.sync({ force: false }).
+        sequelize.sync().
             then(function () {
                 resolve('DB connection sucessful.');
-            }).catch(err => console.log('error has occured'));
+            }).catch(err => console.log(err));
 
 
     });

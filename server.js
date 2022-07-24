@@ -23,6 +23,7 @@ const res = require("express/lib/response");
 const exphbs = require('express-handlebars');
 const stripJs = require('strip-js');
 const { Console } = require("console");
+const { Server } = require("tls");
 
 app.engine('hbs', exphbs.engine({
 
@@ -55,6 +56,7 @@ app.engine('hbs', exphbs.engine({
         }
     }
 }));
+app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'hbs');
 app.use(express.static('public'));
 app.use(function (req, res, next) {
@@ -63,7 +65,7 @@ app.use(function (req, res, next) {
     app.locals.viewingCategory = req.query.category;
     next();
 });
-app.use(express.urlencoded({ extended: true }));
+
 cloudinary.config({
     cloud_name: 'dg3smtlr4',
     api_key: '885533493491343',
@@ -75,7 +77,7 @@ var postData = {};
 var categoryData = {};
 
 
-app.get("/", (req, res) => {
+app.get("//", (req, res) => {
 
     res.redirect("/blog");
 
@@ -269,10 +271,10 @@ app.get('*', function (req, res) {
 
 app.use('/', router);
 blogData.initialize().then(function (categories, posts) {
+    //var port_no=Server.listen(HTTP_PORT);
     app.listen(HTTP_PORT);
 }).catch((error) => {
-    console.log(error);
-    
+ console.log(error);    
 })
 
 
